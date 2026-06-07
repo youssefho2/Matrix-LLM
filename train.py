@@ -1,4 +1,4 @@
-import os
+mport os
 
 import torch
 import torch.nn as nn
@@ -123,11 +123,12 @@ def train():
         in_colab = False
 
     if in_colab:
-        print("[INFO] Running in Google Colab. Mounting Google Drive...")
-        from google.colab import drive
-        drive.mount('/content/drive')
-        cfg.OUTPUT_DIR = "/content/drive/MyDrive/matrix_llm_checkpoints"
-        print(f"[INFO] Overriding checkpoint directory to: {cfg.OUTPUT_DIR}")
+        if os.path.exists('/content/drive'):
+            cfg.OUTPUT_DIR = "/content/drive/MyDrive/matrix_llm_checkpoints"
+            print(f"[INFO] Google Drive mounted. Overriding checkpoint directory to: {cfg.OUTPUT_DIR}")
+        else:
+            print("[WARNING] Google Drive is not mounted. Checkpoints will be saved locally inside Colab and will be deleted when the session ends.")
+            print("[HELP] Recommendation: Run 'from google.colab import drive; drive.mount(\"/content/drive\")' in a Colab notebook cell before starting training.")
 
     print(f"[INFO] Using device: {cfg.DEVICE}")
     print(f"[INFO] Config: vocab_size={cfg.MODEL['vocab_size']}, n_embd={cfg.MODEL['n_embd']}, n_layer={cfg.MODEL['n_layer']}, n_head={cfg.MODEL['n_head']}")
